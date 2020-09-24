@@ -20,7 +20,7 @@
         "description": "freeRouter routing process",
         "nixexprinput": "src",
         "nixexprpath": "RARE/release.nix",
-        "checkinterval": 300,
+        "checkinterval": 23400,
         "schedulingshares": 100,
         "enableemail": false,
         "emailoverride": "",
