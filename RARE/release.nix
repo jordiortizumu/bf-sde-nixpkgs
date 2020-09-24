@@ -1,13 +1,13 @@
-{ freerouter ? null }:
+{ freerouter_src ? null }:
 
 with import ./.;
 let
   freerouter_latest = freerouter.overrideAttrs (_: rec {
     version = "latest";
     name = "freerouter-${version}";
-    src = freerouter;
+    src = freerouter_src;
   });
-in if freerouter == null then
+in if freerouter_src == null then
   {
     inherit RARE;
   }
