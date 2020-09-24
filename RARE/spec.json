@@ -1,0 +1,33 @@
+{
+    "RARE": {
+        "enabled": 1,
+        "hidden": false,
+        "description": "Data plane code and control plane interface",
+        "nixexprinput": "src",
+        "nixexprpath": "RARE/release.nix",
+        "checkinterval": 300,
+        "schedulingshares": 100,
+        "enableemail": false,
+        "emailoverride": "",
+        "keepnr": 3,
+        "inputs": {
+            "src": { "type": "git", "value": "https://gitlab+deploy-token-72:rF5zRLsyjunzkdDd5fpe@gitlab-int.switch.ch/network/bf-sde-nixpkgs.git RARE", "emailresponsible": false }
+        }
+    },
+    "freeRouter": {
+        "enabled": 1,
+        "hidden": false,
+        "description": "freeRouter routing process",
+        "nixexprinput": "src",
+        "nixexprpath": "RARE/release.nix",
+        "checkinterval": 300,
+        "schedulingshares": 100,
+        "enableemail": false,
+        "emailoverride": "",
+        "keepnr": 3,
+        "inputs": {
+            "src": { "type": "git", "value": "https://gitlab+deploy-token-72:rF5zRLsyjunzkdDd5fpe@gitlab-int.switch.ch/network/bf-sde-nixpkgs.git RARE", "emailresponsible": false },
+            "freerouter": { "type": "git", "value": "https://github.com/mc36/freeRouter.git", "emailresponsible": false }
+        }
+    }
+}
