@@ -13,7 +13,7 @@ let
         openssl = self.openssl_1_1;
       };
       RARE = import ./RARE {
-        bf-sde = self.bf-sde.v9_2_0.k4_19_81_ONL_1537d8;
+        bf-sde = self.bf-sde.v9_2_0;
         inherit (self) callPackage;
       };
     };
