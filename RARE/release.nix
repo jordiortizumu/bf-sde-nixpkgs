@@ -1,6 +1,6 @@
 { freerouter_src ? null }:
 
-with import ./.;
+with import ./. {};
 let
   freerouter_latest = freerouter.overrideAttrs (_: rec {
     version = "latest";
