@@ -12,9 +12,9 @@ let
       freerouter = super.callPackage ./freerouter {
         openssl = self.openssl_1_1;
       };
-      RARE = import ./RARE {
+      RARE = self.recurseIntoAttrs (import ./RARE {
         bf-sde = self.bf-sde.v9_2_0;
         inherit (self) callPackage;
-      };
+      });
     };
 in [ overlay ]

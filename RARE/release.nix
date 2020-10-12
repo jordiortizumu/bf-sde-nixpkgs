@@ -1,12 +1,16 @@
 { freerouter_src ? null }:
 
-with import ./. {};
 let
-  freerouter_latest = freerouter.overrideAttrs (_: rec {
+  pkgs = import ./. {};
+  freerouter = pkgs.freerotuer;
+  freerouter_latest = pkgs.freerouter.overrideAttrs (_: rec {
     version = "latest";
     name = "freerouter-${version}";
     src = freerouter_src;
   });
+  ## Hydra doesn't like non-derivation attributes
+  RARE = pkgs.lib.filterAttrs (n: v: n != "recurseForDerivations") pkgs.RARE;
+
 in if freerouter_src == null then
   {
     inherit RARE;
