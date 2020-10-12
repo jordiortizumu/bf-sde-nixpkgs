@@ -17,6 +17,6 @@ in python2.pkgs.buildPythonApplication rec {
   '';
 
   postInstall = ''
-    wrapProgram "$out/bin/bf_forwarder.py" --set PYTHONPATH "${bf-sde}/install/lib/python2.7/site-packages/tofino"
+    wrapProgram "$out/bin/bf_forwarder.py" --set PYTHONPATH "${bf-sde}/lib/python2.7/site-packages/tofino"
   '';
 }
