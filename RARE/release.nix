@@ -2,7 +2,7 @@
 
 let
   pkgs = import ./. {};
-  freerouter = pkgs.freerotuer;
+  freerouter = pkgs.freerouter;
   freerouter_latest = pkgs.freerouter.overrideAttrs (_: rec {
     version = "latest";
     name = "freerouter-${version}";
