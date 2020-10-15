@@ -9,7 +9,7 @@ let
     src = freerouter_src;
   });
   ## Hydra doesn't like non-derivation attributes
-  RARE = pkgs.lib.filterAttrs (n: v: n != "recurseForDerivations") pkgs.RARE;
+  RARE = with pkgs.lib; filterAttrs (n: v: attrsets.isDerivation v) pkgs.RARE;
 
 in if freerouter_src == null then
   {
