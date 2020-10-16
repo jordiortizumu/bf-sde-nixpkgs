@@ -1,7 +1,5 @@
-{ ... } @args:
+{ overlays ? [], ... } @attrs:
 
-import ../nixpkgs (args // {
-  overlays =
-    import ../overlay.nix ++
-    import ./overlay.nix;
+import ../. (attrs // {
+  overlays = overlays ++ import ./overlay.nix;
 })
