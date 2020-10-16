@@ -2,7 +2,10 @@ let
   overlay = self: super:
     {
       net_snmp = super.net_snmp.overrideAttrs (oldAttrs: rec {
-        configureFlags = oldAttrs.configureFlags ++ [ "--with-perl-modules" ];
+        configureFlags = oldAttrs.configureFlags ++
+	  [ "--with-perl-modules"
+	    "--with-persistent-directory=/var/lib/snmp"
+	  ];
 	preConfigure = ''
           perlversion=$(perl -e 'use Config; print $Config{version};')
           perlarchname=$(perl -e 'use Config; print $Config{archname};')
