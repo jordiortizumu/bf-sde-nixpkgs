@@ -5,4 +5,5 @@ bf-sde.buildP4Program rec {
   name = "packet-broker-${version}";
   p4Name = "packet_broker";
   src = import ./repo.nix { inherit fetchFromGitHub; };
+  kernelModule = "bf_kpkt";
 }
