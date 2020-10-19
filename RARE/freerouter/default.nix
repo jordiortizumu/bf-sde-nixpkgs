@@ -3,13 +3,13 @@
 
 stdenv.mkDerivation rec {
   name = "freerouter-${version}";
-  version = "20.9.19";
+  version = "20.10.19";
 
   src = fetchFromGitHub {
     owner = "mc36";
     repo = "freerouter";
-    rev = "0c04126";
-    sha256 = "1ccc8q20c4sg55ha9p8r0kv01dxak1xr627mzq01ya0cxcglc27m";
+    rev = "4599aa";
+    sha256 = "04wgs1fii48wdbk3vz8wda852q7mcy6zm298vvc65ib8h2797b3z";
   };
 
   outputs = [ "out" "native" ];
