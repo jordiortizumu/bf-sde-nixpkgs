@@ -13,7 +13,7 @@ let
 
 in if freerouter_src == null then
   {
-    inherit RARE;
+    inherit RARE freerouter;
   }
 else
   {
