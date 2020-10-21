@@ -7,28 +7,27 @@ let
   sal_modules = callPackage ./sal/modules.nix {
     inherit fetchBitbucketPrivate;
   };
-  kernelModule = "bf_kpkt";
+  std = {
+    inherit bf-sde;
+    kernelModule = "bf_kpkt";
+  };
 in rec {
-  mpls = callPackage ./generic.nix {
-    inherit bf-sde kernelModule;
+  mpls = callPackage ./generic.nix (std // {
     flavor = "mpls";
     buildFlags = "-DHAVE_MPLS";
-  };
-  mpls_wedge100bf32x = callPackage ./generic.nix {
-    inherit bf-sde kernelModule;
+  });
+  mpls_wedge100bf32x = callPackage ./generic.nix (std // {
     flavor = "mpls_wedge100bf32x";
     buildFlags = "-DHAVE_MPLS -D_WEDGE100BF32X_";
-  };
-  srv6 = callPackage ./generic.nix {
-    inherit bf-sde kernelModule;
+  });
+  srv6 = callPackage ./generic.nix (std // {
     flavor = "srv6";
     buildFlags = "-DHAVE_SRV6";
-  };
-  srv6_wedge100bf32x = callPackage ./generic.nix {
-    inherit bf-sde kernelModule;
+  });
+  srv6_wedge100bf32x = callPackage ./generic.nix (std // {
     flavor = "srv6_wedge100bf32x";
     buildFlags = "-DHAVE_SRV6 -D_WEDGE100BF32X_";
-  };
+  });
   bf_forwarder = callPackage ./bf_forwarder.nix {
     inherit bf-sde sal_modules;
   };
