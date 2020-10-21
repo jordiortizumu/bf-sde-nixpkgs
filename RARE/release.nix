@@ -8,6 +8,7 @@ let
     name = "freerouter-${version}";
     src = freerouter_src;
   });
+  SNMPAgent = pkgs.SNMPAgent;
   ## Hydra doesn't like non-derivation attributes
   RARE = with pkgs.lib; filterAttrs (n: v: attrsets.isDerivation v) pkgs.RARE;
 
