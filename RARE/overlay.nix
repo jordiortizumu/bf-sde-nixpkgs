@@ -32,7 +32,7 @@ let
       SNMPAgent = super.callPackage ./snmp {};
 
       RARE = self.recurseIntoAttrs (import ./RARE {
-        bf-sde = self.bf-sde.v9_2_0;
+        bf-sde = self.bf-sde.latest;
         inherit (self) callPackage;
       });
     };
