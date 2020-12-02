@@ -12,7 +12,10 @@ python2.pkgs.buildPythonApplication rec {
   buildInputs = [ makeWrapper ];
 
   preConfigure = ''cd control-plane'';
+
   postInstall = ''
+    mkdir -p $out/etc/packet-broker
+    cp config.json schema.json $out/etc/packet-broker
     wrapProgram "$out/bin/configd.py" --set PYTHONPATH "${bf-sde}/lib/python2.7/site-packages/tofino"
   '';
 
