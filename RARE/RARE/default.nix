@@ -9,7 +9,7 @@ let
   };
   std = {
     inherit bf-sde;
-    kernelModule = "bf_kpkt";
+    requiredKernelModule = "bf_kpkt";
   };
 in rec {
   mpls = callPackage ./generic.nix (std // {
