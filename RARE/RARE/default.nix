@@ -34,6 +34,7 @@ in rec {
   sal_bf2556x = callPackage ./sal/bf2556x.nix {
     inherit fetchBitbucketPrivate sal_modules;
   };
+  p4Dummy = bf-sde.buildP4DummyProgram;
   ## Include a copy of the SDE. This is useful to include those
   ## executables (in particular "bfshell") in an environment with
   ## "nix-env -A RARE".
