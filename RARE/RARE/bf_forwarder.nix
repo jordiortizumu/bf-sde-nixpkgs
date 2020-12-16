@@ -17,6 +17,8 @@ in python2.pkgs.buildPythonApplication rec {
   '';
 
   postInstall = ''
-    wrapProgram "$out/bin/bf_forwarder.py" --set PYTHONPATH "${bf-sde}/lib/python2.7/site-packages/tofino"
+    for p in bf_forwarder.py switchdctl.py; do
+      wrapProgram "$out/bin/$p" --set SDE ${bf-sde} --set SDE_INSTALL ${bf-sde} --set PYTHONPATH "${bf-sde}/lib/python2.7/site-packages/tofino"
+    done
   '';
 }
