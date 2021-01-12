@@ -7,7 +7,7 @@ in python2.pkgs.buildPythonApplication rec {
   pname = "bf_forwarder";
 
   propagatedBuildInputs = [
-    bf-sde sal_modules
+    bf-sde.pkgs.bf-drivers sal_modules
     (python2.withPackages (ps: with ps; [ ]))
   ];
   buildInputs = [ makeWrapper ];
@@ -18,7 +18,7 @@ in python2.pkgs.buildPythonApplication rec {
 
   postInstall = ''
     for p in bf_forwarder.py switchdctl.py; do
-      wrapProgram "$out/bin/$p" --set SDE ${bf-sde} --set SDE_INSTALL ${bf-sde} --set PYTHONPATH "${bf-sde}/lib/python2.7/site-packages/tofino"
+      wrapProgram "$out/bin/$p" --set SDE ${bf-sde} --set SDE_INSTALL ${bf-sde} --set PYTHONPATH "${bf-sde.pkgs.bf-drivers}/lib/python2.7/site-packages/tofino"
     done
   '';
 }
