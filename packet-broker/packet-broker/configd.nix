@@ -6,7 +6,7 @@ python2.pkgs.buildPythonApplication rec {
 
   src = import ./repo.nix { inherit fetchFromGitHub; };
   propagatedBuildInputs = [
-    bf-sde
+    bf-sde.pkgs.bf-drivers
     (python2.withPackages (ps: with ps; [ jsonschema ipaddress ]))
   ];
   buildInputs = [ makeWrapper ];
@@ -16,7 +16,7 @@ python2.pkgs.buildPythonApplication rec {
   postInstall = ''
     mkdir -p $out/etc/packet-broker
     cp config.json schema.json $out/etc/packet-broker
-    wrapProgram "$out/bin/configd.py" --set PYTHONPATH "${bf-sde}/lib/python2.7/site-packages/tofino"
+    wrapProgram "$out/bin/configd.py" --set PYTHONPATH "${bf-sde.pkgs.bf-drivers}/lib/python2.7/site-packages/tofino"
   '';
 
 }
