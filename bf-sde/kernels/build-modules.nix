@@ -7,8 +7,7 @@ stdenv.mkDerivation {
   name = "bf-sde-${version}-kernel-modules-${spec.release}";
   inherit src;
 
-  patches = lib.optionals (spec.patches ? ${version})
-                          spec.patches.${version};
+  patches = spec.patches.${version} or [];
   buildInputs = [ bf-syslibs python2 kmod ];
   configureFlags = [
     " --with-kdrv=yes"
@@ -18,7 +17,7 @@ stdenv.mkDerivation {
     "enable_p4rt=no"
     "enable_pi=no"
   ];
-  KDIR = "${spec.build}";
+  KDIR = "${spec.buildTree}";
 
   preBuild = ''
     cd kdrv
