@@ -82,8 +82,7 @@ let
       mkSrc = component: {
         pname = component;
         src = extractSource component;
-        patches = lib.optionals (sdeSpec.patches ? ${component})
-                                sdeSpec.patches.${component};
+        patches = sdeSpec.patches.${component} or [];
       };
 
       callPackage = lib.callPackageWith
@@ -152,13 +151,16 @@ let
         ## name of the set returned by kernels/default.nix
         buildModules = kernelID:
           let
-            kernelSpec = kernels.${kernelID};
+            defaults = {
+              patches = [];
+              buildModulesOverrides = {};
+            };
+            spec = defaults // kernels.${kernelID};
           in if kernelID != "" then
-            callPackage ./kernels/build-modules.nix (rec {
-              spec =  { patches = []; } // kernelSpec;
+            callPackage ./kernels/build-modules.nix ({
+              inherit spec;
               src = extractSource "bf-drivers";
-            } // (lib.optionalAttrs (kernelSpec ? "stdenv")
-                                    { inherit (kernelSpec) stdenv; }))
+            } // spec.buildModulesOverrides)
           else
             errorModules;
 
@@ -177,7 +179,10 @@ let
             inputs = (builtins.tryEval inputFn).value pkgs;
           in mkShell {
             ## kmod provides insmod, procps provides sysctl
-            buildInputs = [ self self.buildModulesForLocalKernel kmod procps utillinux which ] ++ inputs;
+            ## bf-drivers pulls in a Python2 environment with
+            ## grpcio through its propagated build input.
+            buildInputs = [ self self.pkgs.bf-drivers self.buildModulesForLocalKernel
+                            kmod procps utillinux which ] ++ inputs;
             shellHook = ''
               export P4_INSTALL=~/.bf-sde/${self.version}
               export SDE=${self}
@@ -186,7 +191,7 @@ let
               export SDE_LOGS=$P4_INSTALL/logs
               ## See comment in ./build_p4_program.nix regarding /usr/bin
               export PATH=$PATH:/usr/bin
-              export PYTHONPATH=${self}/lib/python2.7/site-packages/tofino:$PYTHONPATH
+              export PYTHONPATH=${self.pkgs.bf-drivers}/lib/python2.7/site-packages/tofino:$PYTHONPATH
               mkdir -p $P4_INSTALL $SDE_BUILD $SDE_LOGS
 
               cat <<EOF
