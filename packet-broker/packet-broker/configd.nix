@@ -11,6 +11,12 @@ python2.pkgs.buildPythonApplication rec {
   ];
   buildInputs = [ makeWrapper ];
 
+  ## The Python environments (the one above and the one from the
+  ## propagated build inputs of bf-drivers) both contain the same
+  ## version of the "six" package, causing a conflict when they are
+  ## merged.
+  catchConflicts = false;
+
   preConfigure = ''cd control-plane'';
 
   postInstall = ''
