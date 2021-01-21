@@ -1,5 +1,5 @@
 { stdenv, fetchFromGitHub, jdk, jre_headless, libpcap,
-  openssl, dpdk, numactl, makeWrapper }:
+  libbsd, openssl, dpdk, numactl, makeWrapper }:
 
 stdenv.mkDerivation rec {
   name = "freerouter-${version}";
@@ -13,15 +13,15 @@ stdenv.mkDerivation rec {
   };
 
   outputs = [ "out" "native" ];
-  buildInputs = [ jdk jre_headless makeWrapper libpcap openssl dpdk numactl ];
+  buildInputs = [ jdk jre_headless makeWrapper libpcap libbsd openssl dpdk numactl ];
 
   NIX_LDFLAGS = "-ldl -lnuma -lrte_telemetry -lrte_mbuf -lrte_kvargs -lrte_eal";
-  NIX_CFLAGS_COMPILE = "-isystem ${dpdk}/include/dpdk";
 
   buildPhase = ''
     set -e
     mkdir binTmp
     pushd misc/native
+    substituteInPlace p4dpdk.c --replace '<dpdk/' '<'
     sh -e ./c.sh
     popd
     pushd src
