@@ -2,16 +2,26 @@
 
 let
   pkgs = import ./. {};
-  freerouter = pkgs.freerouter;
-  freerouter_latest = pkgs.freerouter.overrideAttrs (_: rec {
+in
+with pkgs;
+with lib;
+let
+  freerouter_latest = freerouter.overrideAttrs (_: rec {
     version = "latest";
     name = "freerouter-${version}";
     src = freerouter_src;
   });
-  SNMPAgent = pkgs.SNMPAgent;
+  wrappable = filterAttrs (n: v: v ? "makeModuleWrapper") pkgs.RARE;
+  kernels = import ../bf-sde/kernels pkgs;
+  wrappersFor = program:
+    let
+      kernels = import ../bf-sde/kernels pkgs;
+    in mapAttrs (kernelID: _: program.makeModuleWrapperForKernel kernelID) kernels;
+  wrappers = mapAttrs' (name: program: (nameValuePair "${name}-wrappers"
+                                       (wrappersFor program)))
+                       wrappable;
   ## Hydra doesn't like non-derivation attributes
-  RARE = with pkgs.lib; filterAttrs (n: v: attrsets.isDerivation v) pkgs.RARE;
-
+  RARE = (filterAttrs (n: v: attrsets.isDerivation v) pkgs.RARE) // wrappers;
 in if freerouter_src == null then
   {
     inherit RARE freerouter SNMPAgent;
