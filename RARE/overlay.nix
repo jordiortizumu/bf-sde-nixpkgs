@@ -41,8 +41,8 @@ let
       SNMPAgent = super.callPackage ./snmp {};
 
       RARE = self.recurseIntoAttrs (import ./RARE {
+        pkgs = self;
         bf-sde = self.bf-sde.latest;
-        inherit (self) callPackage;
       });
     };
 in [ overlay ]
