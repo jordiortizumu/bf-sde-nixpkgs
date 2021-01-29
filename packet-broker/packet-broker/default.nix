@@ -6,4 +6,5 @@
   ## Include a copy of the SDE. This is useful to include those
   ## executables (in particular "bfshell") in a nix-env.
   inherit bf-sde;
+  services = callPackage ./services { };
 }
