@@ -1,4 +1,6 @@
-## Used by the Hydra CI system to build all components for all
+## Build example programs and run their test cases. This requires
+## a lot of memory for parallel builds because each test is run in
+## a VM with 6GB
 ## SDE versions.
 { }:
 
@@ -11,11 +13,8 @@ with lib;
 let
   ## Hydra doesn't like non-derivation attributes
   bf-sde' = filterAttrs (n: v: attrsets.isDerivation v) bf-sde;
-  kernels = import ./bf-sde/kernels pkgs;
   mk = sde: {
-    inherit sde;
-    inherit (sde) pkgs;
-    kernelModules = mapAttrs (kernelID: _: sde.buildModules kernelID) kernels;
+    inherit (sde.test) programs;
   };
   versions = mapAttrs (version: sde: mk sde) bf-sde';
 in versions
