@@ -9,5 +9,6 @@ let
   packetBroker' = (with lib; filterAttrs (n: v: attrsets.isDerivation v) packetBroker);
 in {
   packetBroker = packetBroker' // { inherit wrappers; };
+  inherit (packetBroker) services;
   inherit SNMPAgent;
 }

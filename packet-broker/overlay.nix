@@ -28,8 +28,7 @@ let
 
       SNMPAgent = super.callPackage ./snmp {};
       packetBroker = self.recurseIntoAttrs (import ./packet-broker {
-        bf-sde = self.bf-sde.latest;
-        inherit (self) callPackage;
+        pkgs = self;
       });
     };
 in [ overlay ]
