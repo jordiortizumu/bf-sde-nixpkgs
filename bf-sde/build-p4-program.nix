@@ -19,6 +19,8 @@
 # The flags passed to the p4_build.sh script
   buildFlags ? "",
   src,
+# Optional patches
+  patches ? [],
 # Optional derivation overrides. They need to be applied here in
 # order to make the overridden derivation visibile to the
 # makeModuleWrapper passthru function
@@ -38,6 +40,10 @@ let
       throw "${pname} does not require a kernel module";
 
   passthru = {
+    ## Preserve the name of the program. Used by the test.cases
+    ## attribute of the sde package.
+    inherit p4Name;
+
     ## Build a shell script to load the required kernel module for a given
     ## kernel before executing the program.
     ## Used by release.nix to pre-build wrappers for all kernels
@@ -47,12 +53,33 @@ let
     makeModuleWrapper = makeModuleWrapper' {
       modules = bf-sde.buildModulesForLocalKernel;
     };
+    runTest = args:
+      let
+        ## Re-create the patched source tree to execercise
+        ## the PTF tests
+        src' = stdenv.mkDerivation {
+          name = "${pname}-${version}-source";
+          inherit src patches;
+          configurePhase = "true";
+          buildPhase = "true";
+          installPhase = ''
+            mkdir $out
+            tar cf - . | tar -C $out -xf -
+          '';
+        };
+      in callPackage ./run-test.nix ({
+        inherit self p4Name bf-sde;
+        src = src';
+        ## Default directory of PTF test scripts relative to
+        ## the source tree
+        testDir = path;
+      } // args);
   };
 
   self = (stdenv.mkDerivation rec {
     buildInputs = [ bf-sde getopt which procps python2 ];
 
-    inherit pname version src p4Name passthru;
+    inherit pname version src p4Name patches passthru;
 
     buildPhase = ''
       set -e
