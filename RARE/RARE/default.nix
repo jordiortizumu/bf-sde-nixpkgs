@@ -15,19 +15,19 @@ let
   programs = {
     mpls = callPackage ./generic.nix (std // {
       flavor = "mpls";
-      buildFlags = "-DHAVE_MPLS";
+      buildFlags = [ "-DHAVE_MPLS" ];
     });
     mpls_wedge100bf32x = callPackage ./generic.nix (std // {
       flavor = "mpls_wedge100bf32x";
-      buildFlags = "-DHAVE_MPLS -D_WEDGE100BF32X_";
+      buildFlags = [ "-DHAVE_MPLS -D_WEDGE100BF32X_" ];
     });
     srv6 = callPackage ./generic.nix (std // {
       flavor = "srv6";
-      buildFlags = "-DHAVE_SRV6";
+      buildFlags = [ "-DHAVE_SRV6" ];
     });
     srv6_wedge100bf32x = callPackage ./generic.nix (std // {
       flavor = "srv6_wedge100bf32x";
-      buildFlags = "-DHAVE_SRV6 -D_WEDGE100BF32X_";
+      buildFlags = [ "-DHAVE_SRV6 -D_WEDGE100BF32X_" ];
     });
     p4Dummy = bf-sde.buildP4DummyProgram;
   };
