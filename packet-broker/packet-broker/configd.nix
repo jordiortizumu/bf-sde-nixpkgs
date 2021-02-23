@@ -1,4 +1,4 @@
-{ bf-sde, fetchFromGitHub, makeWrapper }:
+{ bf-sde, fetchFromGitHub }:
 
 let
   bf-drivers = bf-sde.pkgs.bf-drivers;
@@ -11,13 +11,11 @@ in python.pkgs.buildPythonApplication rec {
   propagatedBuildInputs = [
     bf-drivers
   ] ++ (with python.pkgs; [ jsonschema ipaddress ]);
-  buildInputs = [ makeWrapper ];
 
   preConfigure = ''cd control-plane'';
 
   postInstall = ''
     mkdir -p $out/etc/packet-broker
     cp config.json schema.json $out/etc/packet-broker
-    wrapProgram $out/bin/configd.py --set PYTHONPATH ${bf-drivers.sitePackagesPath}/tofino
   '';
 }
