@@ -37,6 +37,8 @@ let
   ## programs create with buildP4Program fail in a clean manner.
   errorModules = stdenv.mkDerivation {
     name = "bf-sde-error-modules";
+    allowSubstitutes = false;
+    preferLocalBuild = true;
     phases = [ "installPhase" ];
     installPhase = ''
         mkdir -p $out/bin
@@ -55,9 +57,16 @@ let
 
   fixedDerivation = { name, outputHash }:
     builtins.derivation {
-      inherit name outputHash;
-      inherit system;
-      builder = "none";
+      inherit name outputHash system;
+      builder = runCommand "SDE-archive-error" {} ''
+        echo
+        echo "Missing SDE component ${name}"
+        echo "Please add it to the Nix store with"
+        echo
+        echo "  nix-store --add-fixed sha256 ${name}"
+        echo
+        exit 1
+      '';
       outputHashMode = "flat";
       outputHashAlgo = "sha256";
     };
@@ -102,7 +111,6 @@ let
         };
         p4c = callPackage ./p4c (mkSrc "p4-compilers");
         tofino-model = callPackage ./tofino-model (mkSrc "tofino-model");
-        p4-hlir = callPackage ./p4-hlir (mkSrc "p4-hlir");
         ptf-modules = callPackage ./ptf-modules (mkSrc "ptf-modules");
         ptf-utils = callPackage ./ptf-modules/utils.nix (mkSrc "ptf-modules");
         tools = callPackage ./tools {
@@ -178,40 +186,49 @@ let
             };
             spec = defaults // kernels.${kernelID};
           in if kernelID != "" then
-            callPackage ./kernels/build-modules.nix ({
+            (callPackage ./kernels/build-modules.nix {
               inherit spec;
               src = extractSource "bf-drivers";
-            } // spec.buildModulesOverrides)
+            }).override spec.buildModulesOverrides
           else
             errorModules;
 
         buildModulesForLocalKernel =
           self.buildModules selectLocalKernelID;
 
+        buildModulesForAllKernels =
+          builtins.mapAttrs (kernelID: _: self.buildModules kernelID) kernels;
+
         ## A function that can be used with nix-shell to create an
         ## environment for developing data-plane and control-plane
-        ## programs in the context of the SDE (see ./sde-env.sh).  The
-        ## function takes an optional argument which must be a
-        ## function, which, given the set of Python packages returns
-        ## the list of packages to add to the environment.
-        mkShell = { inputFn ? pkgs: [] }:
+        ## programs in the context of the SDE (see ./sde-env.sh).
+        mkShell = { inputFn ? { pkgs, pythonPkgs }: {} }:
           let
             bf-drivers = self.pkgs.bf-drivers;
             python = bf-drivers.pythonModule;
-            pythonModules = (builtins.tryEval inputFn).value python.pkgs;
-            pythonEnv = python.withPackages (ps: [ bf-drivers ] ++ pythonModules);
+            defaultInputs = {
+              pkgs = [];
+              cpModules = [];
+              ptfModules = [];
+            };
+            inputs = defaultInputs // (builtins.tryEval inputFn).value {
+              inherit pkgs;
+              pythonPkgs = python.pkgs;
+            };
+            pythonEnv = python.withPackages (ps: [ bf-drivers ]
+                                                 ++ inputs.cpModules);
           in mkShell {
             ## kmod provides insmod, procps provides sysctl
             buildInputs = [ self self.buildModulesForLocalKernel
-                            kmod procps utillinux which pythonEnv ];
+                            kmod procps utillinux which pythonEnv ]
+                            ++ inputs.pkgs;
             shellHook = ''
               export P4_INSTALL=~/.bf-sde/${self.version}
               export SDE=${self}
               export SDE_INSTALL=${self}
               export SDE_BUILD=$P4_INSTALL/build
               export SDE_LOGS=$P4_INSTALL/logs
-              export PYTHONPATH=${bf-drivers.sitePackagesPath}/tofino
-              export PTF_PYTHONPATH=${python.pkgs.makePythonPath pythonModules}:${bf-drivers.sitePackagesPath}/tofino
+              export PTF_PYTHONPATH=${python.pkgs.makePythonPath inputs.ptfModules}
               ## Make sure we can find sudo.  The environment isn't pure anyway.
               export PATH=$PATH:/usr/bin
               mkdir -p $P4_INSTALL $SDE_BUILD $SDE_LOGS
