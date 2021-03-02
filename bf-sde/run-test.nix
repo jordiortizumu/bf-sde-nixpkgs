@@ -14,7 +14,7 @@
 
 { self, p4Name, src, testDir, lib, buildEnv, vmTools, runCommand,
   procps, utillinux, getopt, fontconfig,
-  bf-sde, p4-hlir, ptf-modules, ptf-utils, pythonModules ? [] }:
+  bf-sde, ptf-modules, ptf-utils, pythonModules ? [] }:
 
 let
   prefix = "bf-sde-${bf-sde.version}";
@@ -77,7 +77,7 @@ in vmTools.runInLinuxVM (
 
     echo "Starting tests"
     set +e
-    export PTF_PYTHONPATH=${python.pkgs.makePythonPath ptfModules}:$PYTHONPATH:${bf-sde.pkgs.bf-drivers.sitePackagesPath}/tofino
+    export PTF_PYTHONPATH=${python.pkgs.makePythonPath ptfModules}:$PYTHONPATH
     run_p4_tests.sh -p ${p4Name} -t ${src}/${testDir} 2>&1 | tee /tmp/xchg/test.log
     echo $? >/tmp/xchg/test.status
     exit 0
