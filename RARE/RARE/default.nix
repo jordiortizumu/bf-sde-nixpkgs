@@ -1,4 +1,4 @@
-{ bf-sde, pkgs }:
+{ bf-sde, pkgs, kernelID }:
 
 with pkgs;
 let
@@ -31,7 +31,12 @@ let
     });
     p4Dummy = bf-sde.buildP4DummyProgram;
   };
-  wrappers = lib.mapAttrs (n: p: p.makeModuleWrapper) programs;
+  mkWrapper = p: kernelID:
+    if kernelID == null then
+      p.makeModuleWrapper
+    else
+     p.makeModuleWrapperForKernel kernelID;
+  wrappers = lib.mapAttrs (n: p: mkWrapper p kernelID ) programs;
   install = wrappers // {
     inherit (RARE) bf_forwarder sal_bf2556x;
     inherit (bf-sde.pkgs) bf-utils;

@@ -1,3 +1,4 @@
+kernelID:
 let
   overlay = self: super:
     {
@@ -43,6 +44,7 @@ let
       RARE = self.recurseIntoAttrs (import ./RARE {
         pkgs = self;
         bf-sde = self.bf-sde.latest;
+        inherit kernelID;
       });
     };
 in [ overlay ]
