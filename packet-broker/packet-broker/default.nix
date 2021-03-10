@@ -17,6 +17,8 @@ in {
     wrapper = release.packetBroker.makeModuleWrapper;
   };
 
+  inherit release;
+
   ## Closure for binary deployments containing the release derivations
   ## plus the modules for all supported kernels.  If this closure is
   ## available in the Nix store of the target, only the services and
