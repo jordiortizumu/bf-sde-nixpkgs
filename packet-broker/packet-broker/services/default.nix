@@ -23,7 +23,7 @@ let
       EOF
     '';
 in {
-  packet-broker = addWantedBy "packet-broker.service" "multi-user.target";
-  packet-broker-configd = addWantedBy "packet-broker-configd.service" "packet-broker.service";
-  snabb-snmp-agent = addWantedBy "snabb-snmp-agent.service" "snmpd.service";
+  packet-broker-service = addWantedBy "packet-broker.service" "multi-user.target";
+  packet-broker-configd-service = addWantedBy "packet-broker-configd.service" "packet-broker.service";
+  snabb-snmp-agent-service = addWantedBy "snabb-snmp-agent.service" "snmpd.service";
 }

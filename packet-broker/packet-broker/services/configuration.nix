@@ -1,9 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  broker = pkgs.packetBroker.packetBroker;
-  configd = pkgs.packetBroker.configd;
-  agent = pkgs.SNMPAgent;
+  install = pkgs.packetBroker.install;
 in {
   nixpkgs.overlays = import ../../../overlay.nix ++ import ../../overlay.nix;
 
@@ -11,7 +9,7 @@ in {
     packet-broker = {
       description = "Packet Broker Daemon (bf_switchd)";
       serviceConfig = {
-        ExecStart = "${broker.makeModuleWrapper}/bin/packet_broker-module-wrapper /var/run/packet-broker";
+        ExecStart = "${install.wrapper}/bin/packet_broker-module-wrapper /var/run/packet-broker";
         ExecStartPre = "+/bin/mkdir -p /var/run/packet-broker";
         Restart = "on-failure";
         Type = "simple";
@@ -22,9 +20,9 @@ in {
       after = [ "packet-broker.service" ];
       requires = [ "packet-broker.service" ];
       serviceConfig = {
-        ExecStart = "${configd}/bin/configd.py --config-dir /etc/packet-broker --ifmibs-dir /var/run/packet-broker-snmp";
+        ExecStart = "${install.configd}/bin/configd.py --config-dir /etc/packet-broker --ifmibs-dir /var/run/packet-broker-snmp";
         ExecStartPre = "+/bin/mkdir -p /var/run/packet-broker-snmp";
-        ExecReload = "${configd}/bin/brokerctl reload";
+        ExecReload = "${install.configd}/bin/brokerctl reload";
         Restart = "on-failure";
         Type = "simple";
       };
@@ -34,7 +32,7 @@ in {
       after = [ "snmpd.service" ];
       requires = [ "snmpd.service" ];
       serviceConfig = {
-        ExecStart = "${agent}/bin/interface --ifindex=/etc/snmp/ifindex --shmem-dir=/var/run/packet-broker-snmp";
+        ExecStart = "${install.SNMPAgent}/bin/interface --ifindex=/etc/snmp/ifindex --shmem-dir=/var/run/packet-broker-snmp";
         ExecStartPre = "+/bin/mkdir -p /var/run/packet-broker-snmp";
         Group = "Debian-snmp";
         User = "Debian-snmp";
