@@ -27,7 +27,7 @@ let
       });
 
       SNMPAgent = super.callPackage ./snmp {};
-      packetBroker = self.recurseIntoAttrs (import ./packet-broker {
+      packet-broker = self.recurseIntoAttrs (import ./packet-broker {
         pkgs = self;
       });
     };

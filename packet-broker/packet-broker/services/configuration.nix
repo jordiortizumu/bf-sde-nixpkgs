@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  install = pkgs.packetBroker.install;
+  install = pkgs.packet-broker.install;
 in {
   nixpkgs.overlays = import ../../../overlay.nix ++ import ../../overlay.nix;
 
@@ -9,7 +9,7 @@ in {
     packet-broker = {
       description = "Packet Broker Daemon (bf_switchd)";
       serviceConfig = {
-        ExecStart = "${install.wrapper}/bin/packet_broker-module-wrapper /var/run/packet-broker";
+        ExecStart = "${install.moduleWrapper}/bin/packet_broker-module-wrapper /var/run/packet-broker";
         ExecStartPre = "+/bin/mkdir -p /var/run/packet-broker";
         Restart = "on-failure";
         Type = "simple";
@@ -32,7 +32,7 @@ in {
       after = [ "snmpd.service" ];
       requires = [ "snmpd.service" ];
       serviceConfig = {
-        ExecStart = "${install.SNMPAgent}/bin/interface --ifindex=/etc/snmp/ifindex --shmem-dir=/var/run/packet-broker-snmp";
+        ExecStart = "${pkgs.SNMPAgent}/bin/interface --ifindex=/etc/snmp/ifindex --shmem-dir=/var/run/packet-broker-snmp";
         ExecStartPre = "+/bin/mkdir -p /var/run/packet-broker-snmp";
         Group = "Debian-snmp";
         User = "Debian-snmp";
