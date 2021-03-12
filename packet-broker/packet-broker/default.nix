@@ -6,7 +6,7 @@ let
     packet-broker = pkgs.callPackage ./packet-broker.nix { inherit bf-sde; };
     configd = pkgs.callPackage ./configd.nix { inherit bf-sde; };
   };
-  services = import ./services { inherit (pkgs) path runCommand; };
+  services = import ./services { inherit pkgs; };
   moduleWrapper = release.packet-broker.makeModuleWrapper;
 
   ## We want to have bfshell in the profile's bin directory. It

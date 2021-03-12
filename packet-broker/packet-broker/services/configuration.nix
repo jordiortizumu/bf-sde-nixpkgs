@@ -3,8 +3,6 @@
 let
   install = pkgs.packet-broker.install;
 in {
-  nixpkgs.overlays = import ../../../overlay.nix ++ import ../../overlay.nix;
-
   systemd.services = {
     packet-broker = {
       description = "Packet Broker Daemon (bf_switchd)";

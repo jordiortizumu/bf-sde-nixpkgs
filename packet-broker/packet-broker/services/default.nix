@@ -1,8 +1,9 @@
-{ path, runCommand }:
+{ pkgs }:
 
 let
-  eval = import (path + "/nixos") {
-    configuration = ./configuration.nix;
+  eval = import (pkgs.path + "/nixos/lib/eval-config.nix") {
+    inherit pkgs;
+    modules = [ ./configuration.nix ];
   };
   units = eval.config.systemd.units;
 
@@ -13,7 +14,7 @@ let
   addWantedBy = name: wantedBy:
     let
       unit = units.${name}.unit;
-    in runCommand "${name}" {} ''
+    in pkgs.runCommand "${name}" {} ''
       mkdir $out
       cp ${unit}/*service $out
       chmod a+w $out/*.service
