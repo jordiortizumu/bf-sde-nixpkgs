@@ -8,7 +8,7 @@ let
       derivation =
         { runCommand, version, unzip, stdenv, thrift, boost, libusb,
           curl, bf-syslibs, bf-drivers, bf-utils, autoconf,
-          automake115x }:
+          automake115x, autoPatchelfHook, icu60 }:
 
         let
           ## This is the full SAL package. It contains the zip files of the
@@ -27,7 +27,8 @@ let
 
           buildInputs = [ bf-drivers.pythonModule thrift boost libusb
                           curl unzip bf-syslibs.dev bf-drivers.dev
-                          bf-utils autoconf automake115x ];
+                          bf-utils autoconf automake115x
+                          autoPatchelfHook icu60 ];
           outputs = [ "out" "dev" ];
           enableParallelBuilding = true;
 
@@ -53,6 +54,12 @@ let
             for file in $out/bin/*.sh; do
               substituteInPlace $file --replace ./cp2112 $out/bin/cp2112
             done
+
+            ## Install the pre-built SAL
+            cd ${src'}/APS-One-touch*/release/sal*
+            cp build/salRefApp $out/bin
+            chmod a+x $out/bin/salRefApp
+            cp sal_tp_install/lib/*.so* $out/lib
           '';
         };
     in callPackage derivation {};
