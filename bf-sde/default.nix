@@ -300,7 +300,7 @@ let
       version = "9.5.0";
       sde = fetchFromStore {
         name = "bf-sde-${version}.tgz";
-        outputHash = "61d55a06fa6f80fc1f859a80ab8897eeca43f06831d793d7ec7f6f56e6529ed7";
+        outputHash = "65bc73e17c42cb7a5100669bdbfb4dd56f59c6c81ebe9e5f9e7a3db229f25aa3";
         patches = {
           mainTools = [ sde/run_switchd.patch sde/run_bfshell.patch
                         sde/run_p4_tests-9.5.0.patch ];
