@@ -11,7 +11,7 @@
         "emailoverride": "",
         "keepnr": 3,
         "inputs": {
-            "src": { "type": "git", "value": "https://github.com/alexandergall/bf-sde-nixpkgs.git", "emailresponsible": false }
+            "src": { "type": "git", "value": "https://github.com/jordiortizumu/bf-sde-nixpkgs.git", "emailresponsible": false }
         }
     },
     "test-cases": {
@@ -26,7 +26,7 @@
         "emailoverride": "",
         "keepnr": 3,
         "inputs": {
-            "src": { "type": "git", "value": "https://github.com/alexandergall/bf-sde-nixpkgs.git", "emailresponsible": false }
+            "src": { "type": "git", "value": "https://github.com/jordiortizumu/bf-sde-nixpkgs.git", "emailresponsible": false }
         }
     }
 }
